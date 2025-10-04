@@ -6,8 +6,7 @@ metadata:
     app: guestbook
     tier: frontend
 spec:
-  # modify replicas according to your case
-  replicas: 3
+  replicas: 3 # pod 数は3個を維持する
   selector:
     matchLabels:
       tier: frontend

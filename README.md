@@ -47,25 +47,29 @@ graph TD
     E --> H[Container: web app server]
 ```
 
-### 通信制御
-
-```mermaid
-graph TD
-    U[User] --> I[Ingress]
-    I --> S[Service]
-    S --> P1[Pod 1: web server]
-    S --> P2[Pod 2: web server]
-    S --> P3[Pod 3: web server]
-```
-
 ### ReplicaSet
 
 [Pod を落としても ReplicaSet の値を維持しようとするデモ](./replicaset/README.md)
 
-### ローリングアップデート
+### (仮)ローリングアップデート
 
 新しいバージョンをリリースしたら、新しい ReplicaSet, Pod がつくられ、古い ReplicaSet が更新される的なデモ
 
 ## HPA(Horizontal Pod Autoscaling)
 
 HPA の設定をすれば負荷があがるとうまく対応してくれるよ的なデモ
+
+### 通信制御
+
+#### 一般的な web server として運用するときの図？
+```mermaid
+graph TD
+    U[User] --> I[Ingress]
+    
+    subgraph K8S["Kubernetes Cluster"]
+        I --> S[Service]
+        S --> P1[Pod 1: web server]
+        S --> P2[Pod 2: web server]
+        S --> P3[Pod 3: web server]
+    end
+```
