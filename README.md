@@ -60,11 +60,11 @@ graph TD
 
 ### ReplicaSet
 
-Pod を落としても ReplicaSet の値を維持しようとする的なデモ
+[Pod を落としても ReplicaSet の値を維持しようとするデモ](./replicaset/README.md)
 
 ### ローリングアップデート
 
-新しいバージョンをリリースしたら、新しい　ReplicaSet, Pod がつくられ、古い ReplicaSet が更新される的なデモ
+新しいバージョンをリリースしたら、新しい ReplicaSet, Pod がつくられ、古い ReplicaSet が更新される的なデモ
 
 ## HPA(Horizontal Pod Autoscaling)
 
