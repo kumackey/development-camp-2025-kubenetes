@@ -28,9 +28,20 @@ kubectl get replicaset
 kubectl get pods -l tier=frontend
 ```
 
-### Podの削除
+### 復旧監視
 ```bash
-kubectl delete pod <pod-name>
+kubectl get pods -l tier=frontend -w
+```
+
+### Podの削除
+- delete one pod
+```bash
+kubectl delete pod $(kubectl get pods -l tier=frontend -o jsonpath='{.items[0].metadata.name}')
+```
+
+- delete two pods
+```bash
+kubectl delete pod $(kubectl get pods -l tier=frontend -o jsonpath='{.items[0].metadata.name}') $(kubectl get pods -l tier=frontend -o jsonpath='{.items[1].metadata.name}')
 ```
 
 ### 自動復旧の確認
