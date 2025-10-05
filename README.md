@@ -1,4 +1,4 @@
-# development-camp-2025-kubenetes
+# Kubenetes 完全に理解した
 
 ## deployment における構成
 
