@@ -1,0 +1,22 @@
+{
+  "name": "hono-retry-demo",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:api": "node src/api.js",
+    "start:worker": "node src/worker.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.11.1",
+  "dependencies": {
+    "@hono/node-server": "^1.14.2",
+    "hono": "^4.9.9",
+    "ioredis": "^5.8.0"
+  }
+}

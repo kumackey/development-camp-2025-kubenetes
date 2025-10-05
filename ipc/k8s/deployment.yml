@@ -1,0 +1,141 @@
+# ===============================
+# Redis と Hono(App) をそれぞれ Deployment として定義
+# ===============================
+
+# -------------------------------
+# Redis Deployment
+# -------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis                     # Deployment 名（kubectl get deployment redis）
+spec:
+  replicas: 2                     # Pod の数（スケールアウトしたければ変更）
+  selector:                       # この Deployment が管理する Pod を識別するためのラベルセレクタ
+    matchLabels:
+      app: redis                  # Pod の metadata.labels.app が "redis" のものを対象にする
+  template:                       # Pod テンプレート（実際に作成される Pod の仕様）
+    metadata:
+      labels:
+        app: redis                # Pod に付与するラベル。Service 側の selector と一致させる
+    spec:
+      containers:
+        - name: redis             # コンテナ名
+          image: redis:7-alpine   # 使用する Redis イメージ
+          imagePullPolicy: IfNotPresent # ローカルにあれば Pull しない
+          ports:
+            - containerPort: 6379 # コンテナ内で公開するポート
+          args: ["--appendonly", "yes"] # 永続化ON
+          # Pod のヘルスチェック設定
+          readinessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 2  # 起動から何秒後にチェックを開始するか
+            periodSeconds: 2        # チェック間隔（秒）
+          livenessProbe:
+            tcpSocket:
+              port: 6379
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:                # リソース要求と制限
+            requests:
+              cpu: "50m"            # 最低限確保される CPU
+              memory: "64Mi"
+            limits:
+              cpu: "500m"           # 最大許可 CPU
+              memory: "256Mi"
+
+---
+
+# -------------------------------
+# Hono API Deployment
+# -------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hono-api                   # Deployment 名（API専用）
+spec:
+  replicas: 2                      # 最初は 2 Pod で起動
+  selector:
+    matchLabels:
+      app: hono-api                # このラベルに一致する Pod を管理する
+  template:
+    metadata:
+      labels:
+        app: hono-api              # Pod に付けるラベル（Service 側と一致させる）
+    spec:
+      containers:
+        - name: api
+          image: local/hono-retry-demo:1.0   # Docker build したローカルイメージ
+          imagePullPolicy: IfNotPresent      # Minikube 内でビルドした場合に必須
+          env:                               # 環境変数を渡す（アプリの接続情報）
+            - name: APP_TYPE
+              value: api                     # API モードで起動
+            - name: REDIS_HOST
+              value: redis                   # Redis Service 名（DNSで解決される）
+            - name: REDIS_PORT
+              value: "6379"
+            - name: PORT
+              value: "3000"
+          ports:
+            - containerPort: 3000            # アプリが Listen するポート
+          # Pod の状態監視
+          readinessProbe:                    # 外部からリクエストを受けられる状態か？
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 2
+            periodSeconds: 2
+            failureThreshold: 10
+          livenessProbe:                     # アプリ自体が生きているか？
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+
+---
+
+# -------------------------------
+# Hono Worker Deployment
+# -------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hono-worker               # Deployment 名（Worker専用）
+spec:
+  replicas: 2                      # 最初は 2 Pod で起動
+  selector:
+    matchLabels:
+      app: hono-worker             # このラベルに一致する Pod を管理する
+  template:
+    metadata:
+      labels:
+        app: hono-worker           # Pod に付けるラベル
+    spec:
+      containers:
+        - name: worker
+          image: local/hono-retry-demo:1.0   # Docker build したローカルイメージ
+          imagePullPolicy: IfNotPresent      # Minikube 内でビルドした場合に必須
+          env:                               # 環境変数を渡す（アプリの接続情報）
+            - name: APP_TYPE
+              value: worker                  # Worker モードで起動
+            - name: REDIS_HOST
+              value: redis                   # Redis Service 名（DNSで解決される）
+            - name: REDIS_PORT
+              value: "6379"
+          # Workerにはヘルスチェック不要（HTTP サーバーがないため）
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "1"
+              memory: "256Mi"

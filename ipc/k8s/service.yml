@@ -1,0 +1,38 @@
+# ===============================
+# Redis と Hono-App の Service 定義
+# ===============================
+
+# -------------------------------
+# Redis Service
+# -------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis                     # Service 名（Pod から "redis" で参照できる）
+spec:
+  type: ClusterIP                 # クラスタ内部通信のみ（外部には公開しない）
+  selector:                       # この Service がトラフィックを転送する Pod を指定
+    app: redis                    # ラベル app=redis の Pod に転送する
+  ports:
+    - name: redis
+      port: 6379                  # Service が公開するポート番号
+      targetPort: 6379            # 実際の Pod 側のポート番号（同じなら一致でOK）
+
+---
+
+# -------------------------------
+# Hono API Service
+# -------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: hono-api                  # Hono API の Service 名
+spec:
+  type: NodePort                  # Minikube 外からもアクセスできるように NodePort にする
+  selector:
+    app: hono-api                 # ラベル app=hono-api の Pod にトラフィックを転送
+  ports:
+    - name: http
+      port: 3000                  # Service が提供するポート番号
+      targetPort: 3000            # コンテナ内のポート番号
+      nodePort: 30080             # ホスト側のポート番号（明示的に指定。任意）

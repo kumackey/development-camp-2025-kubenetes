@@ -59,17 +59,32 @@ graph TD
 
 HPA の設定をすれば負荷があがるとうまく対応してくれるよ的なデモ
 
+## プロセス間通信
+
+
 ### 通信制御
 
 #### 一般的な web server として運用するときの図？
 ```mermaid
 graph TD
     U[User] --> I[Ingress]
-    
+
     subgraph K8S["Kubernetes Cluster"]
         I --> S[Service]
         S --> P1[Pod 1: web server]
         S --> P2[Pod 2: web server]
         S --> P3[Pod 3: web server]
     end
+```
+[Pod間通信と非同期処理のデモ](./ipc/README.md)
+
+Redis Streamsを使った非同期ワーカーパターン。APIとWorkerを分離し、非同期でタスクを処理する。
+
+```mermaid
+graph LR
+    Client[Client] -->|NodePort| APIPod[Pod1: hono-api]
+    APIPod -->|Enqueue Task| RedisPod[Pod2: redis]
+    RedisPod -->|Stream| WorkerPod[Pod3: hono-worker]
+    WorkerPod -->|Save Result| RedisPod
+    APIPod -->|Get Result| RedisPod
 ```
