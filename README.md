@@ -81,3 +81,7 @@ ref: https://kubernetes.io/docs/concepts/overview/components/
 今回は minikube を使っている
 
 ref: https://minikube.sigs.k8s.io/docs/
+
+## 補足: 「宣言的」とは
+
+ref: https://kubernetes.io/ja/docs/concepts/overview/working-with-objects/object-management/
