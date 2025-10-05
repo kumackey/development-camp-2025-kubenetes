@@ -30,7 +30,7 @@ kubectl get pods -l tier=frontend
 
 ### Podの削除
 ```bash
-kubectl delete pod <pod-name>
+kubectl delete pod $(kubectl get pods -l tier=frontend -o jsonpath='{.items[0].metadata.name}')
 ```
 
 ### 自動復旧の確認
