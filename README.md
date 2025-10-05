@@ -1,38 +1,5 @@
 # development-camp-2025-kubenetes
 
-## control plane と worker node
-
-```mermaid
-graph TD
-    subgraph CP["Control Plane"]
-        A[API Server]
-        B[etcd]
-        C[Scheduler]
-        D[Controller Manager]
-    end
-    
-    subgraph WN1["Worker Node 1"]
-        E[kubelet]
-        F[kube-proxy]
-        G[Container Runtime]
-    end
-    
-    subgraph WN2["Worker Node 2"]
-        H[kubelet]
-        I[kube-proxy]
-        J[Container Runtime]
-    end
-    
-    A <--> E
-    A <--> H
-```
-
-ref: https://kubernetes.io/docs/concepts/overview/components/
-
-今回は minikube を使う
-
-ref: https://minikube.sigs.k8s.io/docs/
-
 ## deployment における構成
 
 ```mermaid
@@ -81,3 +48,36 @@ Ingress は minikube では arm64 では試せなかったので、設定例だ�
 ### Service 間通信
 
 デモする
+
+## 補足: control plane と worker node
+
+```mermaid
+graph TD
+    subgraph CP["Control Plane"]
+        A[API Server]
+        B[etcd]
+        C[Scheduler]
+        D[Controller Manager]
+    end
+    
+    subgraph WN1["Worker Node 1"]
+        E[kubelet]
+        F[kube-proxy]
+        G[Container Runtime]
+    end
+    
+    subgraph WN2["Worker Node 2"]
+        H[kubelet]
+        I[kube-proxy]
+        J[Container Runtime]
+    end
+    
+    A <--> E
+    A <--> H
+```
+
+ref: https://kubernetes.io/docs/concepts/overview/components/
+
+今回は minikube を使っている
+
+ref: https://minikube.sigs.k8s.io/docs/
