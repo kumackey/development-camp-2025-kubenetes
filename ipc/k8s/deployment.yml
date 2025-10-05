@@ -10,7 +10,7 @@ kind: Deployment
 metadata:
   name: redis                     # Deployment 名（kubectl get deployment redis）
 spec:
-  replicas: 2                     # Pod の数（スケールアウトしたければ変更）
+  replicas: 1                     # Pod の数（Redisは1つのみ、クラスタ構成なしの場合）
   selector:                       # この Deployment が管理する Pod を識別するためのラベルセレクタ
     matchLabels:
       app: redis                  # Pod の metadata.labels.app が "redis" のものを対象にする
@@ -30,12 +30,12 @@ spec:
           readinessProbe:
             tcpSocket:
               port: 6379
-            initialDelaySeconds: 2  # 起動から何秒後にチェックを開始するか
+            initialDelaySeconds: 5  # 起動から何秒後にチェックを開始するか
             periodSeconds: 2        # チェック間隔（秒）
           livenessProbe:
             tcpSocket:
               port: 6379
-            initialDelaySeconds: 5
+            initialDelaySeconds: 10
             periodSeconds: 5
           resources:                # リソース要求と制限
             requests:
@@ -84,14 +84,14 @@ spec:
             httpGet:
               path: /health
               port: 3000
-            initialDelaySeconds: 2
+            initialDelaySeconds: 10          # Redis接続確立を待つ
             periodSeconds: 2
             failureThreshold: 10
           livenessProbe:                     # アプリ自体が生きているか？
             httpGet:
               path: /health
               port: 3000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 15
             periodSeconds: 10
           resources:
             requests:

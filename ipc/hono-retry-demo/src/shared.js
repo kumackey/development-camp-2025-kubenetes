@@ -1,9 +1,9 @@
 // shared.js - Redis接続設定の共通化
 import Redis from 'ioredis'
 
-// Redis 接続設定
+// Redis 接続設定（環境変数から読み取る）
 export const REDIS_HOST = process.env.REDIS_HOST || 'redis'
-export const REDIS_PORT = Number(process.env.REDIS_PORT || 6379)
+export const REDIS_PORT = parseInt(process.env.REDIS_PORT || '6379', 10)
 
 // Redis接続の共通設定
 export const redisConfig = {

@@ -18,9 +18,6 @@ graph LR
 ## セットアップ
 
 ```bash
-# Minikube起動（3ノード構成）
-minikube start --nodes 3
-
 # イメージビルド
 docker build -t local/hono-retry-demo:1.0 hono-retry-demo/
 

@@ -20,6 +20,10 @@ echo -e "${BLUE}非同期通信デモ${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
+# 計算値の定義
+CALC_A=500
+CALC_B=500
+
 # Step 1: ポートフォワードを開始
 echo -e "${YELLOW}Step 1: ポートフォワードを開始...${NC}"
 kubectl port-forward service/hono-api 3000:3000 > /dev/null 2>&1 &
@@ -39,10 +43,11 @@ cleanup() {
 trap cleanup EXIT
 
 # Step 2: 非同期リクエストを送信
-echo -e "${YELLOW}Step 2: 非同期リクエストを送信（100 + 250）...${NC}"
+echo -e "${YELLOW}Step 2: 非同期リクエストを送信...${NC}"
+echo "計算リクエスト: $CALC_A + $CALC_B"
 RESPONSE=$(curl -s -X POST http://localhost:3000/calculate/async \
   -H "Content-Type: application/json" \
-  -d '{"a": 100, "b": 250}')
+  -d "{\"a\": $CALC_A, \"b\": $CALC_B}")
 
 REQUEST_ID=$(echo $RESPONSE | grep -o '"requestId":"[^"]*' | cut -d'"' -f4)
 echo "レスポンス: $RESPONSE"
@@ -65,7 +70,7 @@ while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
         echo -e "${GREEN}✓ 計算が完了しました！${NC}"
         echo -e "${GREEN}========================================${NC}"
         echo "Request ID: $REQUEST_ID"
-        echo "計算結果: 100 + 250 = ${CALC_RESULT}"
+        echo "計算結果: $CALC_A + $CALC_B = ${CALC_RESULT}"
         echo ""
         echo -e "${BLUE}重要なポイント:${NC}"
         echo "1. APIがリクエストを受け取り、Redis Streamにタスクをエンキュー"
