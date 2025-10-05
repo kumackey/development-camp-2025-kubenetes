@@ -57,7 +57,9 @@ graph TD
 
 ## HPA(Horizontal Pod Autoscaling)
 
-HPA の設定をすれば負荷があがるとうまく対応してくれるよ的なデモ
+
+
+[HPA の設定をすれば負荷があがるとうまく対応してくれるよ的なデモ](./hpa/README.md)
 
 ### 通信制御
 
