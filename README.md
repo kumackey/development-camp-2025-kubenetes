@@ -121,14 +121,6 @@ graph TD
     E --> H[Container: web app server]
 ```
 
-### ReplicaSet
-
-[Pod を落としても ReplicaSet の値を維持しようとするデモ](./replicaset/README.md)
-
-### (仮)ローリングアップデート
-
-新しいバージョンをリリースしたら、新しい ReplicaSet, Pod がつくられ、古い ReplicaSet が更新される的なデモ
-
 ## HPA(Horizontal Pod Autoscaling)
 
 HPA の設定をすれば負荷があがるとうまく対応してくれるよ的なデモ
