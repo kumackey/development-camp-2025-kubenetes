@@ -51,27 +51,33 @@ graph TD
 
 [Pod を落としても ReplicaSet の値を維持しようとするデモ](./replicaset/README.md)
 
-### (仮)ローリングアップデート
-
-新しいバージョンをリリースしたら、新しい ReplicaSet, Pod がつくられ、古い ReplicaSet が更新される的なデモ
-
 ## HPA(Horizontal Pod Autoscaling)
-
-
 
 [HPA の設定をすれば負荷があがるとうまく対応してくれるよ的なデモ](./hpa/README.md)
 
-### 通信制御
+## 通信制御
 
-#### 一般的な web server として運用するときの図？
+### 一般的な web server
+
 ```mermaid
 graph TD
-    U[User] --> I[Ingress]
+    C[Client] --> LB[Ingress-managed Load Balancer]
+    LB --> I[Ingress]
     
     subgraph K8S["Kubernetes Cluster"]
-        I --> S[Service]
-        S --> P1[Pod 1: web server]
-        S --> P2[Pod 2: web server]
-        S --> P3[Pod 3: web server]
+        I --> |"routing rule1"| S1[Service]
+        I --> |"routing rule2"| S2[Service]
+        S1 --> P1[Pod 1]
+        S1 --> P2[Pod 2]
+        S2 --> P3[Pod 3]
+        S2 --> P4[Pod 4]
     end
 ```
+
+ref: https://kubernetes.io/docs/concepts/services-networking/ingress/#what-is-ingress
+
+Ingress は minikube では arm64 では試せなかったので、設定例だけ載せておく: https://kubernetes.io/docs/concepts/services-networking/ingress/#hostname-wildcards
+
+### Service 間通信
+
+デモする
