@@ -121,9 +121,5 @@ graph TD
     E --> H[Container: web app server]
 ```
 
-## HPA(Horizontal Pod Autoscaling)
-
-HPA の設定をすれば負荷があがるとうまく対応してくれるよ的なデモ
-
 ## 補足: 「宣言的」とは
 ref: https://kubernetes.io/ja/docs/concepts/overview/working-with-objects/object-management/
